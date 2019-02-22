@@ -14,24 +14,44 @@
     <!-- Code Javascript -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+
+            const MAX_ITEMS_PAG = 50;
+
             let app = new Vue({
                 el: '#app',
                 data: {
-                    data: []
+                    photos: [],
+                    pag: 1
                 },
                 mounted: function() {
+                    // Get data
                     this.getData();
+                    // Enable scroll infinity
+                    window.onscroll = this.handleScroll;
+                },
+                computed: {
+                    limitItems: function () {
+                        return this.pag * MAX_ITEMS_PAG;
+                    },
+                    pagData: function() {
+                        return this.photos.slice(0, this.limitItems);
+                    }
                 },
                 methods: {
                     getData: function () {
                         axios.get('/data.json')
                             .then(function (response) {
-                                app.data = response.data;
+                                app.photos = _.sortBy(response.data, ['date']);
                             })
                             .catch(function (error) {
                                 console.log(error);
                             });
-                    }
+                    },
+                    handleScroll: function(e) {
+                        if(document.documentElement.getBoundingClientRect().height < e.pageY +  800) {
+                            app.pag += 1;
+                        }
+                    },
                 }
             });
         });
@@ -40,9 +60,9 @@
 <body>
     <div id="app">
         <div class="container">
-            <div v-for="item in data" class="item">
+            <a v-for="item in pagData" class="item" :href="item.original">
                 <img :src="`thumbnails/${item.name}`">
-            </div>
+            </a>
         </div>
     </div>
 </body>

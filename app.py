@@ -84,7 +84,7 @@ def remove_old_thumbnails(thumbnails_path, thumbnails):
         for file in files:
             # Check file in dict
             exist = False
-            for item in thumbnails: 
+            for item in thumbnails:
                 if item['name'] == file:
                     exist = True
             # Delete file
@@ -92,8 +92,10 @@ def remove_old_thumbnails(thumbnails_path, thumbnails):
                 os.remove(os.path.join(thumbnails_path, THUMBNAIL_FOLDER_NAME, file))
 
 def save_json(thumbnails, filename):
+    ''' Print dict to JSON '''
     with open(filename, 'w') as fp:
         json.dump(thumbnails, fp)
 
 if __name__ == '__main__':
     main()
+
