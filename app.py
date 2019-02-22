@@ -18,6 +18,7 @@ thumbnails = []
 @click.option('--path', required=True, help='Folder path with your photos', type=click.Path(exists=True))
 @click.option('--thumbnails_path', required=True, help='Where the thumbnails will be saved', type=click.Path(exists=False))
 def main(path, thumbnails_path):
+    ''' Main '''
     # Make thumbnails
     click.echo(click.style('Make thumbnails'))
     photos = search_photos(path)
@@ -60,7 +61,7 @@ def save_thumbnail(file_original, path_folder_thumbnails):
     # Save image in dict
     thumbnails.append({
             'name': final_name,
-            'original': ntpath.basename(file_original),
+            'original': file_original,
             'date': int(os.path.getmtime(file_original))
         })
 
@@ -75,9 +76,11 @@ def get_sha1_hash(file):
     return hasher.hexdigest()
 
 def get_filename_with_sha1(file):
+    ''' Get filename with sha1 '''
     return get_sha1_hash(file) + ntpath.basename(file)
 
 def remove_old_thumbnails(thumbnails_path, thumbnails):
+    ''' Remove from folder thumnails old images '''
     # Read folder
     for root, dirs, files in os.walk(os.path.join(thumbnails_path, THUMBNAIL_FOLDER_NAME)):
         # Read files
