@@ -4,11 +4,13 @@ import PIL
 from PIL import Image
 import hashlib
 import ntpath
+import json
 
 # Variables
 FORMATS_PHOTOS = ('jpg', 'jpeg', 'png', 'gif')
 THUMBNAIL_WIDTH = 400
 BLOCKSIZE_SHA1 = 65536
+FILENAME_JSON = 'data.json'
 thumbnails = []
 
 @click.command()
@@ -16,11 +18,18 @@ thumbnails = []
 @click.option('--thumbnails_path', required=True, help='Where the thumbnails will be saved', type=click.Path(exists=False))
 def main(path, thumbnails_path):
     # Make thumbnails
+    click.echo(click.style('Make thumbnails'))
     photos = search_photos(path)
-    for photo in photos:
-        save_thumbnail(photo, thumbnails_path)
+    with click.progressbar(photos) as photos_progress:
+        for photo in photos_progress:
+            save_thumbnail(photo, thumbnails_path)
     # Delete old thumbnails
+    click.echo(click.style('Delete old thumbnails'))
     remove_old_thumbnails(thumbnails_path, thumbnails)
+    # Save JSON
+    click.echo(click.style('Save data'))
+    save_json(thumbnails, FILENAME_JSON)
+    click.echo(click.style('Done!', fg='green'))
 
 def search_photos(path):
     ''' Search all images path '''
@@ -81,6 +90,10 @@ def remove_old_thumbnails(thumbnails_path, thumbnails):
             if not exist:
                 os.remove(os.path.join(thumbnails_path, file))
 
+def save_json(thumbnails, filename):
+    os.remove(filename)
+    with open(filename, 'w') as fp:
+        json.dump(thumbnails, fp)
 
 if __name__ == '__main__':
     main()
