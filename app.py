@@ -9,6 +9,7 @@ import json
 # Variables
 FORMATS_PHOTOS = ('jpg', 'jpeg', 'png', 'gif')
 THUMBNAIL_WIDTH = 400
+THUMBNAIL_FOLDER_NAME = 'thumbnail'
 BLOCKSIZE_SHA1 = 65536
 FILENAME_JSON = 'data.json'
 thumbnails = []
@@ -44,11 +45,11 @@ def search_photos(path):
 def save_thumbnail(file_original, path_folder_thumbnails):
     ''' Make and save thumbnail '''
     # Create folder thumbnails
-    if not os.path.exists(path_folder_thumbnails):
-        os.makedirs(path_folder_thumbnails)
+    if not os.path.exists(os.path.join(path_folder_thumbnails, THUMBNAIL_FOLDER_NAME)):
+        os.makedirs(os.path.join(path_folder_thumbnails, THUMBNAIL_FOLDER_NAME))
     # Resize image
     final_name = get_filename_with_sha1(file_original)
-    final_path = os.path.join(path_folder_thumbnails, final_name)
+    final_path = os.path.join(path_folder_thumbnails, THUMBNAIL_FOLDER_NAME, final_name)
     if not os.path.isfile(final_path):
         img = Image.open(file_original)
         wpercent = (THUMBNAIL_WIDTH / float(img.size[0]))
@@ -78,7 +79,7 @@ def get_filename_with_sha1(file):
 
 def remove_old_thumbnails(thumbnails_path, thumbnails):
     # Read folder
-    for root, dirs, files in os.walk(thumbnails_path):
+    for root, dirs, files in os.walk(os.path.join(thumbnails_path, THUMBNAIL_FOLDER_NAME)):
         # Read files
         for file in files:
             # Check file in dict
@@ -88,10 +89,9 @@ def remove_old_thumbnails(thumbnails_path, thumbnails):
                     exist = True
             # Delete file
             if not exist:
-                os.remove(os.path.join(thumbnails_path, file))
+                os.remove(os.path.join(thumbnails_path, THUMBNAIL_FOLDER_NAME, file))
 
 def save_json(thumbnails, filename):
-    os.remove(filename)
     with open(filename, 'w') as fp:
         json.dump(thumbnails, fp)
 
