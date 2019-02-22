@@ -19,6 +19,8 @@ def main(path, thumbnails_path):
     photos = search_photos(path)
     for photo in photos:
         save_thumbnail(photo, thumbnails_path)
+        import os.path, time
+        print("last modified: %s" % int(os.path.getmtime(photo)))
     # Delete old thumbnails
     remove_old_thumbnails(thumbnails_path, thumbnails)
 
