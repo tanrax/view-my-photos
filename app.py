@@ -9,7 +9,7 @@ import json
 # Variables
 FORMATS_PHOTOS = ('jpg', 'jpeg', 'png', 'gif')
 THUMBNAIL_WIDTH = 400
-THUMBNAIL_FOLDER_NAME = 'thumbnail'
+THUMBNAIL_FOLDER_NAME = 'thumbnails'
 BLOCKSIZE_SHA1 = 65536
 FILENAME_JSON = 'data.json'
 thumbnails = []
