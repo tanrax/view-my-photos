@@ -19,8 +19,6 @@ def main(path, thumbnails_path):
     photos = search_photos(path)
     for photo in photos:
         save_thumbnail(photo, thumbnails_path)
-        import os.path, time
-        print("last modified: %s" % int(os.path.getmtime(photo)))
     # Delete old thumbnails
     remove_old_thumbnails(thumbnails_path, thumbnails)
 
@@ -52,7 +50,8 @@ def save_thumbnail(file_original, path_folder_thumbnails):
     # Save image in dict
     thumbnails.append({
             'name': final_name,
-            'original': ntpath.basename(file_original)
+            'original': ntpath.basename(file_original),
+            'date': int(os.path.getmtime(file_original))
         })
 
 def get_sha1_hash(file):
