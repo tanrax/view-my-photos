@@ -19,6 +19,8 @@ def main(path, thumbnails_path):
     photos = search_photos(path)
     for photo in photos:
         save_thumbnail(photo, thumbnails_path)
+    # Delete old thumbnails
+    remove_old_thumbnails(thumbnails_path, thumbnails)
 
 def search_photos(path):
     ''' Search all images path '''
@@ -36,7 +38,8 @@ def save_thumbnail(file_original, path_folder_thumbnails):
     if not os.path.exists(path_folder_thumbnails):
         os.makedirs(path_folder_thumbnails)
     # Resize image
-    final_path = os.path.join(path_folder_thumbnails, get_filename_with_sha1(file_original))
+    final_name = get_filename_with_sha1(file_original)
+    final_path = os.path.join(path_folder_thumbnails, final_name)
     if not os.path.isfile(final_path):
         img = Image.open(file_original)
         wpercent = (THUMBNAIL_WIDTH / float(img.size[0]))
@@ -46,8 +49,8 @@ def save_thumbnail(file_original, path_folder_thumbnails):
         img.save(final_path)
     # Save image in dict
     thumbnails.append({
-            'url': final_path,
-            'original': file_original
+            'name': final_name,
+            'original': ntpath.basename(file_original)
         })
 
 def get_sha1_hash(file):
@@ -62,6 +65,21 @@ def get_sha1_hash(file):
 
 def get_filename_with_sha1(file):
     return get_sha1_hash(file) + ntpath.basename(file)
+
+def remove_old_thumbnails(thumbnails_path, thumbnails):
+    # Read folder
+    for root, dirs, files in os.walk(thumbnails_path):
+        # Read files
+        for file in files:
+            # Check file in dict
+            exist = False
+            for item in thumbnails: 
+                if item['name'] == file:
+                    exist = True
+            # Delete file
+            if not exist:
+                os.remove(os.path.join(thumbnails_path, file))
+
 
 if __name__ == '__main__':
     main()
