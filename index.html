@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- Normalize -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/tanrax/symbiosis-css@v1.0/symbiosis.min.css">
+	<!-- Tailwind -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Font Awesome 5.4.1 -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
+    <!-- VueJS -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- Lodash -->
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.11/lodash.min.js"></script>
+    <!-- Axios -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- Code Javascript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let app = new Vue({
+                el: '#app',
+                data: {
+                    data: []
+                },
+                mounted: function() {
+                    this.getData();
+                },
+                methods: {
+                    getData: function () {
+                        axios.get('/data.json')
+                            .then(function (response) {
+                                app.data = response.data;
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });
+                    }
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div id="app">
+        <img v-for="item in data" :src="`thumbnails/${item.name}`">
+    </div>
+</body>
+</html>
