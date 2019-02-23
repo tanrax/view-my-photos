@@ -1,6 +1,7 @@
 data.json
 thumbnails/
-
-css/main.css
-css/main.css.map
+css/
 prepros-6.config
+build/
+dist/
+view_my_photos.egg-info/
