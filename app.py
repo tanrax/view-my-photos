@@ -17,11 +17,12 @@ thumbnails = []
 @click.command()
 @click.option('--path', required=True, help='Folder path with your photos', type=click.Path(exists=True))
 @click.option('--thumbnails_path', required=True, help='Where the thumbnails will be saved', type=click.Path(exists=False))
-def main(path, thumbnails_path):
+@click.option('--ignore', help='Path ignore', type=click.Path(exists=True))
+def main(path, thumbnails_path, ignore):
     ''' Main '''
     # Make thumbnails
     click.echo(click.style('Make thumbnails'))
-    photos = search_photos(path)
+    photos = search_photos(path, ignore)
     with click.progressbar(photos) as photos_progress:
         for photo in photos_progress:
             save_thumbnail(photo, thumbnails_path)
@@ -33,14 +34,15 @@ def main(path, thumbnails_path):
     save_json(thumbnails, FILENAME_JSON)
     click.echo(click.style('Done!', fg='green'))
 
-def search_photos(path):
+def search_photos(path, path_ignore):
     ''' Search all images path '''
     paths_photos = []
     for root, dirs, files in os.walk(path):
-        for file in files:
-            if file.lower().endswith(FORMATS_PHOTOS):
-                # Save path
-                paths_photos.append(os.path.join(root, file))
+        if not path_ignore or path_ignore not in root:
+            for file in files:
+                if file.lower().endswith(FORMATS_PHOTOS):
+                    # Save path
+                    paths_photos.append(os.path.join(root, file))
     return paths_photos
 
 def save_thumbnail(file_original, path_folder_thumbnails):
