@@ -24,7 +24,7 @@ pip3 install --user view-my-photos
 ### Only Debian/Ubuntu
 
 ``` bash
-sudo apt install python-imaging
+sudo apt install libjpeg8-dev zlib1g-dev
 ```
 
 ## Update
