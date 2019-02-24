@@ -10,7 +10,21 @@ The objective of this software is to be able to visualize a great quantity of im
 ## Use
 
 ```bash
-view-my-photos --path [path photos] --path
+view-my-photos --path [Path photos] --thumbnails_path [Path where the thumbnails will be stored] [--ignore [Path to ignore]]
+```
+
+## Example
+
+### Basic
+
+```bash
+view-my-photos --path trip_spain --thumbnails_path .
+```
+
+### Ignore folder
+
+```bash
+view-my-photos --path family --thumbnails_path .  --ignore ex-girlfriend
 ```
 
 ## Install
