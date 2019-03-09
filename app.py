@@ -96,10 +96,21 @@ def remove_old_thumbnails(thumbnails_path, thumbnails):
             if not exist:
                 os.remove(os.path.join(thumbnails_path, THUMBNAIL_FOLDER_NAME, file))
 
+def filter_date(json):
+    ''' Filter by date '''
+    print(json)
+    try:
+        return int(json['date'])
+    except KeyError:
+        return 0
+
 def save_json(thumbnails, filename):
     ''' Print dict to JSON '''
+    # Sort thumbnails
+    thumbnails_sort = sorted(thumbnails, key=lambda k: k['date'], reverse=True)
     with open(filename, 'w') as fp:
-        json.dump(thumbnails, fp)
+        # Make JSON
+        json.dump(thumbnails_sort, fp)
 
 if __name__ == '__main__':
     main()
