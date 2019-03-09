@@ -19,7 +19,7 @@ thumbnails = []
 @click.option('--thumbnails_path', required=True, help='Where the thumbnails will be saved', type=click.Path(exists=False))
 @click.option('--ignore', help='Path ignore', type=click.Path(exists=True))
 def main(path, thumbnails_path, ignore):
-    ''' Main '''
+    ''' Generator of static galleries. '''
     # Make thumbnails
     click.echo(click.style('Make thumbnails'))
     photos = search_photos(path, ignore)
