@@ -93,7 +93,7 @@ def get_filename_with_sha1(file):
 def get_date_taken(file):
     ''' Get date taken image '''
     tag = 36867
-    if Image.open(file)._getexif():
+    if Image.open(file)._getexif() and tag in Image.open(file)._getexif():
         # Format> 2015:08:07 09:22:30
         date_format = Image.open(file)._getexif()[tag]
         temp_format = date_format.split(' ')[0].split(':')
