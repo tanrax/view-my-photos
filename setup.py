@@ -2,7 +2,7 @@ from setuptools import setup
 setup(
   name = 'view-my-photos',
   py_modules=['app'],
-  version = '1.0.2',
+  version = '1.0.3',
   python_requires='>3.6',
   description = 'Generates an HTML gallery of photos indicating the folder where they are stored.',
   author = 'Andros Fenollosa',
