@@ -1,10 +1,12 @@
 import click
 import os
 import PIL
-from PIL import Image
+from PIL import Image, ExifTags
 import hashlib
 import ntpath
 import json
+import time
+from datetime import date
 
 # Variables
 FORMATS_PHOTOS = ('jpg', 'jpeg', 'png', 'gif')
@@ -58,13 +60,20 @@ def save_thumbnail(file_original, path_folder_thumbnails):
         wpercent = (THUMBNAIL_WIDTH / float(img.size[0]))
         hsize = int((float(img.size[1]) * float(wpercent)))
         img = img.resize((THUMBNAIL_WIDTH, hsize), PIL.Image.ANTIALIAS)
+        # Get EXIF info (orientation...)
+        exif = None
+        if 'exif' in img.info:
+            exif = img.info['exif']
         # Save image in folder
-        img.save(final_path)
+        if exif:
+            img.save(final_path, exif=exif)
+        else:
+            img.save(final_path)
     # Save image in dict
     thumbnails.append({
             'name': final_name,
             'original': file_original,
-            'date': int(os.path.getmtime(file_original))
+            'date': get_date_taken(file_original)
         })
 
 def get_sha1_hash(file):
@@ -81,6 +90,18 @@ def get_filename_with_sha1(file):
     ''' Get filename with sha1 '''
     return get_sha1_hash(file) + ntpath.basename(file)
 
+def get_date_taken(file):
+    ''' Get date taken image '''
+    tag = 36867
+    if Image.open(file)._getexif():
+        # Format> 2015:08:07 09:22:30
+        date_format = Image.open(file)._getexif()[tag]
+        temp_format = date_format.split(' ')[0].split(':')
+        temp_date = date(int(temp_format[0]), int(temp_format[1]), int(temp_format[2]))
+        return int(time.mktime(temp_date.timetuple()))
+    else:
+        return int(os.path.getmtime(file))
+
 def remove_old_thumbnails(thumbnails_path, thumbnails):
     ''' Remove from folder thumnails old images '''
     # Read folder
@@ -95,14 +116,6 @@ def remove_old_thumbnails(thumbnails_path, thumbnails):
             # Delete file
             if not exist:
                 os.remove(os.path.join(thumbnails_path, THUMBNAIL_FOLDER_NAME, file))
-
-def filter_date(json):
-    ''' Filter by date '''
-    print(json)
-    try:
-        return int(json['date'])
-    except KeyError:
-        return 0
 
 def save_json(thumbnails, filename):
     ''' Print dict to JSON '''
