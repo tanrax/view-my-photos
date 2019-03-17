@@ -61,13 +61,15 @@ def save_thumbnail(file_original, path_folder_thumbnails):
         hsize = int((float(img.size[1]) * float(wpercent)))
         img = img.resize((THUMBNAIL_WIDTH, hsize), PIL.Image.ANTIALIAS)
         # Get EXIF info (orientation...)
-        exif = None
-        if 'exif' in img.info:
-            exif = img.info['exif']
-        # Save image in folder
-        if exif:
-            img.save(final_path, exif=exif)
-        else:
+        try:
+            if 'exif' in img.info:
+                exif = img.info['exif']
+                # Save image in folder
+                img.save(final_path, exif=exif)
+            else:
+                # Save image in folder without exif
+                img.save(final_path)
+        except:
             img.save(final_path)
     # Save image in dict
     thumbnails.append({
