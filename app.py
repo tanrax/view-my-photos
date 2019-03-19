@@ -94,14 +94,17 @@ def get_filename_with_sha1(file):
 
 def get_date_taken(file):
     ''' Get date taken image '''
-    tag = 36867
-    if Image.open(file)._getexif() and tag in Image.open(file)._getexif():
-        # Format> 2015:08:07 09:22:30
-        date_format = Image.open(file)._getexif()[tag]
-        temp_format = date_format.split(' ')[0].split(':')
-        temp_date = date(int(temp_format[0]), int(temp_format[1]), int(temp_format[2]))
-        return int(time.mktime(temp_date.timetuple()))
-    else:
+    try:
+        if Image.open(file)._getexif() and tag in Image.open(file)._getexif():
+            # Format> 2015:08:07 09:22:30
+            tag = 36867
+            date_format = Image.open(file)._getexif()[tag]
+            temp_format = date_format.split(' ')[0].split(':')
+            temp_date = date(int(temp_format[0]), int(temp_format[1]), int(temp_format[2]))
+            return int(time.mktime(temp_date.timetuple()))
+        else:
+            return int(os.path.getmtime(file))
+    except:
         return int(os.path.getmtime(file))
 
 def remove_old_thumbnails(thumbnails_path, thumbnails):
