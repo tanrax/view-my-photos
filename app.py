@@ -1,7 +1,7 @@
 import click
 import os
 import PIL
-from PIL import Image, ExifTags
+from PIL import Image, ImageFile, ExifTags
 import hashlib
 import ntpath
 import json
@@ -15,6 +15,7 @@ THUMBNAIL_FOLDER_NAME = 'thumbnails'
 BLOCKSIZE_SHA1 = 65536
 FILENAME_JSON = 'data.json'
 thumbnails = []
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 @click.command()
 @click.option('--path', required=True, help='Folder path with your photos', type=click.Path(exists=True))
